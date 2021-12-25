@@ -43,6 +43,90 @@ DJANGO_LOGLEVEL=info
 docker run --env-file src/.env -d -p 8000:8000 itproger-django:0.12
 ```
 
+Database Structure
+```sql
+CREATE TABLE "Book" (
+    "ID" int   NOT NULL,
+    "Title" string   NOT NULL,
+    "Author" int   NOT NULL,
+    "Summary" string   NOT NULL,
+    "Imprint" string   NOT NULL,
+    "ISBN" string   NOT NULL,
+    "Genre" int   NOT NULL,
+    "Language" int   NOT NULL,
+    "BookInstance" int   NOT NULL,
+    CONSTRAINT "pk_Book" PRIMARY KEY (
+        "ID"
+     )
+);
+
+CREATE TABLE "Author" (
+    "ID" int   NOT NULL,
+    "BookID" int   NOT NULL,
+    "name" string   NOT NULL,
+    "date_of_birth" date   NOT NULL,
+    "date_of_death" date   NOT NULL,
+    CONSTRAINT "pk_Author" PRIMARY KEY (
+        "ID"
+     )
+);
+
+CREATE TABLE "Genre" (
+    "ID" int   NOT NULL,
+    "BookID" int   NOT NULL,
+    "Name" string   NOT NULL,
+    CONSTRAINT "pk_Genre" PRIMARY KEY (
+        "ID"
+     )
+);
+
+CREATE TABLE "Language" (
+    "ID" int   NOT NULL,
+    "BookID" int   NOT NULL,
+    "name" string   NOT NULL,
+    CONSTRAINT "pk_Language" PRIMARY KEY (
+        "ID"
+     )
+);
+
+CREATE TABLE "BookInstance" (
+    "ID" int   NOT NULL,
+    "DUE_BACK" date   NOT NULL,
+    "STATUS" string   NOT NULL,
+    "BOOK" int   NOT NULL,
+    CONSTRAINT "pk_BookInstance" PRIMARY KEY (
+        "ID"
+     )
+);
+
+ALTER TABLE "Book" ADD CONSTRAINT "fk_Book_Author" FOREIGN KEY("Author")
+REFERENCES "Author" ("ID");
+
+ALTER TABLE "Book" ADD CONSTRAINT "fk_Book_Genre" FOREIGN KEY("Genre")
+REFERENCES "Genre" ("ID");
+
+ALTER TABLE "Book" ADD CONSTRAINT "fk_Book_Language" FOREIGN KEY("Language")
+REFERENCES "Language" ("ID");
+
+ALTER TABLE "Book" ADD CONSTRAINT "fk_Book_BookInstance" FOREIGN KEY("BookInstance")
+REFERENCES "BookInstance" ("ID");
+
+ALTER TABLE "Author" ADD CONSTRAINT "fk_Author_BookID" FOREIGN KEY("BookID")
+REFERENCES "Book" ("ID");
+
+ALTER TABLE "Genre" ADD CONSTRAINT "fk_Genre_BookID" FOREIGN KEY("BookID")
+REFERENCES "Book" ("ID");
+
+ALTER TABLE "Language" ADD CONSTRAINT "fk_Language_BookID" FOREIGN KEY("BookID")
+REFERENCES "Book" ("ID");
+
+ALTER TABLE "BookInstance" ADD CONSTRAINT "fk_BookInstance_BOOK" FOREIGN KEY("BOOK")
+REFERENCES "Book" ("ID");
+```
+
+![Local Library Model](src/locallibrary/catalog/static/img/table.png)
+
+
 Project structure
 ```sh
 $ cd project_repository_folder/  <- Repo from github
